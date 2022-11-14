@@ -14,6 +14,7 @@ const initAmap = async () => {
 
 const amap = await initAmap();
 
+//地理编码
 export const initGeocoder = (city = "全国") => {
   let geocoder;
   amap.plugin("AMap.Geocoder", function () {
@@ -26,7 +27,12 @@ export const initGeocoder = (city = "全国") => {
   return geocoder;
 };
 
-export const initPlaceSearch = (city = "全国") => {
+//关键字搜搜
+export const initPlaceSearch = (
+  city = "全国",
+  lang = "zh_cn",
+  extensions = "base"
+) => {
   //   const placeSearch = new amap.PlaceSearch({
   //     // city 指定搜索所在城市，支持传入格式有：城市名、citycode和adcode
   //     city,
@@ -35,7 +41,18 @@ export const initPlaceSearch = (city = "全国") => {
   amap.plugin("AMap.PlaceSearch", function () {
     placeSearch = new amap.PlaceSearch({
       city,
+      lang,
+      extensions,
     });
   });
   return placeSearch;
+};
+
+//天气
+export const initWeather = () => {
+  let weather;
+  amap.plugin("AMap.Weather", () => {
+    weather = new amap.Weather();
+  });
+  return weather;
 };

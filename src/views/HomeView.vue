@@ -18,6 +18,7 @@
           class="py-2 cursor-pointer"
           v-for="result in amapSearchResult"
           :key="result.id"
+          @click="previewCity(result)"
         >
           {{ result.name }}
         </li>
@@ -29,8 +30,11 @@
 <script setup>
 import { ref } from "vue";
 import { initPlaceSearch } from "@/utils/amapHelper.js";
+import { useRouter } from "vue-router";
 
-const placeSearch = initPlaceSearch();
+const router = useRouter();
+
+const placeSearch = initPlaceSearch("全国", "zh_cn", "all");
 
 const searchQuery = ref("");
 const amapSearchResult = ref(null);
@@ -58,5 +62,23 @@ const getSearchResult = () => {
 
 const clearSearchResult = () => {
   amapSearchResult.value = null;
+};
+
+const previewCity = (searchResult) => {
+  console.log(searchResult);
+  const { cityname: cityName, pname: pName, location, adcode } = searchResult;
+  router.push({
+    name: "cityView",
+    params: {
+      province: pName,
+      city: cityName,
+    },
+    query: {
+      lat: location.lat,
+      lng: location.lng,
+      adcode,
+      preview: true,
+    },
+  });
 };
 </script>
