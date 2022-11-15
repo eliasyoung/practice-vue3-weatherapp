@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
+    "nanoid": "^4.0.0",
     "vue": "^3.2.38",
     "vue-router": "^4.1.5"
   },

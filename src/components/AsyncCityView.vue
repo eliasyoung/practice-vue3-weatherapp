@@ -77,7 +77,11 @@
             class="text-[32px] leading-normal"
           ></i>
           <div class="flex gap-2 flex-1 justify-end">
-            <p>{{ Math.round(day.tempMax) }}&deg;C~{{ Math.round(day.tempMin) }}&deg;C</p>
+            <p>
+              {{ Math.round(day.tempMax) }}&deg;C~{{
+                Math.round(day.tempMin)
+              }}&deg;C
+            </p>
           </div>
         </div>
       </div>
@@ -88,32 +92,27 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import qweather from "@/utils/qweatherHelper.js";
 
 const route = useRoute();
 
-const qWeatherApiKey = "";
-
 const getWeatherData = async () => {
   try {
-    const qWeatherApiUrl = "https://devapi.qweather.com/v7/weather/";
-
-    const getWeatherQuery = {
-      location: `${route.query.lng},${route.query.lat}`,
-      key: qWeatherApiKey,
-    };
-
-    const formatUrlParams = new URLSearchParams(getWeatherQuery).toString();
-
-    const response = [
-      //currentweather
-      await fetch(qWeatherApiUrl + "now?" + formatUrlParams),
-      //24hours hourly
-      await fetch(qWeatherApiUrl + "24h?" + formatUrlParams),
-      //7days daily
-      await fetch(qWeatherApiUrl + "7d?" + formatUrlParams),
+    const resData = [
+      await qweather.getCurrentWeatherData({
+        lng: route.query.lng,
+        lat: route.query.lat,
+      }),
+      await qweather.getHourlyWeatherData({
+        lng: route.query.lng,
+        lat: route.query.lat,
+      }),
+      await qweather.getDailyWeatherData({
+        lng: route.query.lng,
+        lat: route.query.lat,
+      }),
     ];
 
-    const resData = await Promise.all(response.map((res) => res.json()));
     const weatherData = {
       current: resData[0].now,
       hourly: resData[1].hourly,
@@ -121,21 +120,41 @@ const getWeatherData = async () => {
       currentTime: Date.now(),
     };
     return weatherData;
+    // const response = [
+    //   //currentweather
+    //   await fetch(qWeatherApiUrl + "now?" + formatUrlParams),
+    //   //24hours hourly
+    //   await fetch(qWeatherApiUrl + "24h?" + formatUrlParams),
+    //   //7days daily
+    //   await fetch(qWeatherApiUrl + "7d?" + formatUrlParams),
+    // ];
+
+    // const resData = await Promise.all(response.map((res) => res.json()));
+    // const weatherData = {
+    //   current: resData[0].now,
+    //   hourly: resData[1].hourly,
+    //   daily: resData[2].daily,
+    //   currentTime: Date.now(),
+    // };
+    // return weatherData;
   } catch (err) {
     console.log(err);
   }
 };
 
 const weatherData = await getWeatherData();
+// const weatherData = undefined;
 console.log(weatherData);
 
 const formatDate = computed(() => {
-  return `${new Date(weatherData.currentTime).toLocaleDateString("zh-CN", {
-    weekday: "short",
-    day: "2-digit",
-    month: "long",
-  })} ${new Date(weatherData.currentTime).toLocaleTimeString("zh-CN", {
-    timeStyle: "short",
-  })}`;
+  if (weatherData) {
+    return `${new Date(weatherData.currentTime).toLocaleDateString("zh-CN", {
+      weekday: "short",
+      day: "2-digit",
+      month: "long",
+    })} ${new Date(weatherData.currentTime).toLocaleTimeString("zh-CN", {
+      timeStyle: "short",
+    })}`;
+  } else return "ooops";
 });
 </script>
