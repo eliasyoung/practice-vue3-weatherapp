@@ -6,7 +6,7 @@
       <RouterLink :to="{ name: 'home' }">
         <div class="flex items-center gap-3">
           <i class="fa-solid fa-sun text-2xl"></i>
-          <p class="text-2xl">The Local Weather</p>
+          <p class="text-2xl">天气</p>
         </div>
       </RouterLink>
 
@@ -87,7 +87,7 @@ const addCity = () => {
   saveCities.value.push(locationObject);
   localStorage.setItem("savedCities", JSON.stringify(saveCities.value));
 
-  let query = Object.assign({}, route.query);
+  let query = Object.assign({}, route.query, { id: locationObject.id });
   delete query.preview;
   router.replace({ query });
 };

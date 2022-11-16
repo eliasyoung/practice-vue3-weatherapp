@@ -9,7 +9,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      Roboto: ["Roboto,sans-serif"],
+      Roboto: ["Roboto,Noto Serif SC,sans-serif"],
     },
     container: {
       padding: "2rem",

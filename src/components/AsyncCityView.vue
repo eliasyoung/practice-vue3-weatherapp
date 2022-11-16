@@ -86,15 +86,26 @@
         </div>
       </div>
     </div>
+
+    <!-- Remove City  -->
+    <div
+      class="flex items-center gap-2 py-12 text-white cursor-pointer duration-150 hover:text-red-500"
+      @click="removeCity"
+      v-if="!route.query.preview"
+    >
+      <i class="fa-solid fa-trash"> </i>
+      <p>移除城市</p>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import qweather from "@/utils/qweatherHelper.js";
 
 const route = useRoute();
+const router = useRouter();
 
 const getWeatherData = async () => {
   try {
@@ -143,8 +154,7 @@ const getWeatherData = async () => {
 };
 
 const weatherData = await getWeatherData();
-// const weatherData = undefined;
-console.log(weatherData);
+// const weatherData = undefined
 
 const formatDate = computed(() => {
   if (weatherData) {
@@ -157,4 +167,18 @@ const formatDate = computed(() => {
     })}`;
   } else return "ooops";
 });
+
+const removeCity = () => {
+  if (localStorage.getItem("savedCities")) {
+    const updatedCities = JSON.parse(
+      localStorage.getItem("savedCities")
+    ).filter((value) => {
+      return value.id != route.query.id;
+    });
+    localStorage.setItem("savedCities", JSON.stringify(updatedCities));
+    router.replace({
+      name: "home",
+    });
+  }
+};
 </script>

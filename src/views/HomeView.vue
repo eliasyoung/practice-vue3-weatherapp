@@ -3,7 +3,7 @@
     <div class="pt-4 mb-8 relative">
       <input
         type="text"
-        placeholder="Search for a city or state"
+        placeholder="输入城市名并搜索"
         class="py-2 px-1 w-full bg-transparent border-b focus:border-weather-secondary focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]"
         v-model.trim="searchQuery"
         @keyup.enter="getSearchResult"
@@ -24,6 +24,14 @@
         </li>
       </ul>
     </div>
+    <div class="flex flex-col gap-4">
+      <Suspense>
+        <CityList />
+        <template #fallback>
+          <p>Loading...</p>
+        </template>
+      </Suspense>
+    </div>
   </main>
 </template>
 
@@ -31,6 +39,7 @@
 import { ref } from "vue";
 import { initPlaceSearch } from "@/utils/amapHelper.js";
 import { useRouter } from "vue-router";
+import CityList from "../components/CityList.vue";
 
 const router = useRouter();
 
