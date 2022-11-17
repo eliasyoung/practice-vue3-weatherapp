@@ -9,6 +9,9 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      meta: {
+        title: "主页",
+      },
     },
     {
       path: "/weather/:province/:city",
@@ -16,6 +19,12 @@ const router = createRouter({
       component: CityView,
     },
   ],
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.name === "home") document.title = `${to.meta.title} | 天气`;
+  if (to.name === "cityView") document.title = `${to.params.city} | 天气`;
+  next();
 });
 
 export default router;
